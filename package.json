@@ -1,0 +1,33 @@
+{
+  "name": "dms-poc",
+  "version": "1.0.0",
+  "description": "Data Management System PoC",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.11.0",
+    "aws-sdk": "^2.1490.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mammoth": "^1.9.1",
+    "multer": "^1.4.4",
+    "pdf-parse": "^1.1.1",
+    "pg": "^8.11.3",
+    "tesseract.js": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.8.10",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/pg": "^8.10.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

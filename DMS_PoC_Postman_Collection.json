@@ -1,0 +1,423 @@
+{
+	"info": {
+		"_postman_id": "dms-poc-collection",
+		"name": "DMS PoC API Collection",
+		"description": "Collection untuk testing API Data Management System PoC\n\nBase URL: http://localhost:3000\n\nFeatures:\n- Document upload dengan OCR\n- Full-text search\n- Document management\n- File download",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				},
+				"description": "Cek status kesehatan aplikasi dan koneksi ke semua layanan (PostgreSQL, Elasticsearch, MinIO)"
+			},
+			"response": [
+				{
+					"name": "Health Check Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2024-01-01T00:00:00.000Z\",\n  \"services\": {\n    \"database\": \"connected\",\n    \"elasticsearch\": \"connected\",\n    \"minio\": \"connected\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Upload Document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "document",
+							"type": "file",
+							"src": [],
+							"description": "File dokumen yang akan diupload (PDF, DOC, DOCX, TXT, JPG, PNG, GIF)"
+						},
+						{
+							"key": "title",
+							"value": "Contoh Dokumen",
+							"type": "text",
+							"description": "Judul dokumen (opsional)"
+						},
+						{
+							"key": "description",
+							"value": "Ini adalah contoh dokumen untuk testing",
+							"type": "text",
+							"description": "Deskripsi dokumen (opsional)"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/documents/upload",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"documents",
+						"upload"
+					]
+				},
+				"description": "Upload dokumen dengan OCR otomatis. File akan disimpan di MinIO, metadata di PostgreSQL, dan diindeks di Elasticsearch untuk pencarian."
+			},
+			"response": [
+				{
+					"name": "Upload Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "document",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "title",
+									"value": "Contoh Dokumen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/documents/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"documents",
+								"upload"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"success\": true,\n  \"message\": \"Document uploaded successfully\",\n  \"data\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"filename\": \"document.pdf\",\n    \"title\": \"Contoh Dokumen\",\n    \"description\": \"Ini adalah contoh dokumen untuk testing\",\n    \"size\": 1024576,\n    \"mimetype\": \"application/pdf\",\n    \"s3_key\": \"documents/123e4567-e89b-12d3-a456-426614174000_document.pdf\",\n    \"ocr_text\": \"Extracted text from document...\",\n    \"uploaded_at\": \"2024-01-01T00:00:00.000Z\"\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Search Documents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/documents/search?q=kontrak",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"documents",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "kontrak",
+							"description": "Query pencarian (required)"
+						}
+					]
+				},
+				"description": "Mencari dokumen berdasarkan query menggunakan Elasticsearch. Pencarian dilakukan pada title, description, filename, dan OCR text."
+			},
+			"response": [
+				{
+					"name": "Search Results",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/documents/search?q=kontrak",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"documents",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "kontrak"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"success\": true,\n  \"data\": {\n    \"total\": 25,\n    \"documents\": [\n      {\n        \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n        \"filename\": \"kontrak.pdf\",\n        \"title\": \"Kontrak Kerja\",\n        \"description\": \"Kontrak kerja karyawan\",\n        \"size\": 1024576,\n        \"mimetype\": \"application/pdf\",\n        \"uploaded_at\": \"2024-01-01T00:00:00.000Z\",\n        \"score\": 1.5,\n        \"highlight\": {\n          \"ocr_text\": [\"...kontrak kerja...\"],\n          \"title\": [\"<em>Kontrak</em> Kerja\"]\n        }\n      }\n    ]\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get All Documents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/documents?limit=20&offset=0",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"documents"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20",
+							"description": "Jumlah hasil maksimal (default: 10)"
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"description": "Offset untuk pagination (default: 0)"
+						}
+					]
+				},
+				"description": "Mendapatkan daftar semua dokumen dengan pagination dari database PostgreSQL."
+			},
+			"response": [
+				{
+					"name": "Documents List",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/documents?limit=20&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"success\": true,\n  \"data\": {\n    \"total\": 100,\n    \"documents\": [\n      {\n        \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n        \"filename\": \"document.pdf\",\n        \"title\": \"Sample Document\",\n        \"description\": \"This is a sample document\",\n        \"size\": 1024576,\n        \"mimetype\": \"application/pdf\",\n        \"uploaded_at\": \"2024-01-01T00:00:00.000Z\"\n      }\n    ]\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "Download Document",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/documents/{{document_id}}/download",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"documents",
+						"{{document_id}}",
+						"download"
+					]
+				},
+				"description": "Download dokumen berdasarkan ID. File akan diambil dari MinIO storage."
+			},
+			"response": [
+				{
+					"name": "Download Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/documents/123e4567-e89b-12d3-a456-426614174000/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"documents",
+								"123e4567-e89b-12d3-a456-426614174000",
+								"download"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "raw",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/pdf"
+						},
+						{
+							"key": "Content-Disposition",
+							"value": "attachment; filename=\"document.pdf\""
+						}
+					],
+					"cookie": [],
+					"body": "[Binary file content]"
+				},
+				{
+					"name": "Document Not Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/documents/invalid-id/download",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"documents",
+								"invalid-id",
+								"download"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"success\": false,\n  \"message\": \"Document not found\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Web Interface",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Akses antarmuka web untuk upload, search, dan download dokumen."
+			},
+			"response": [
+				{
+					"name": "Web Interface",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/html"
+						}
+					],
+					"cookie": [],
+					"body": "<!DOCTYPE html>\n<html>\n<head>\n    <title>DMS PoC</title>\n</head>\n<body>\n    <h1>Data Management System PoC</h1>\n    <!-- Web interface content -->\n</body>\n</html>"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"description": "Base URL untuk DMS PoC API"
+		},
+		{
+			"key": "document_id",
+			"value": "123e4567-e89b-12d3-a456-426614174000",
+			"description": "Sample document ID untuk testing download"
+		}
+	]
+}
