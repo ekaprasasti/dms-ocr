@@ -217,37 +217,34 @@ mindmap
 ## Security & Configuration
 
 ```mermaid
-graph TB
-    subgraph "Security Layers"
-        ENV[Environment Variables<br/>.env Configuration]
-        CORS[CORS Policy<br/>Cross-Origin Control]
-        Valid[Input Validation<br/>File Type Checking]
-        Auth[Authentication<br/>(Future Enhancement)]
+flowchart TB
+    subgraph Security ["Security Layers"]
+        ENV["Environment Variables<br/>.env Configuration"]
+        CORS["CORS Policy<br/>Cross-Origin Control"]
+        Valid["Input Validation<br/>File Type Checking"]
+        Auth["Authentication<br/>(Future Enhancement)"]
     end
     
-    subgraph "Configuration Management"
-        Docker[Docker Compose<br/>Service Configuration]
-        Network[Internal Networking<br/>Service Discovery]
-        Volume[Data Persistence<br/>Volume Mounting]
+    subgraph Config ["Configuration Management"]
+        Docker["Docker Compose<br/>Service Configuration"]
+        Network["Internal Networking<br/>Service Discovery"]
+        Volume["Data Persistence<br/>Volume Mounting"]
     end
     
-    subgraph "Application Layer"
-        API[DMS API Server]
-        Services[Application Services]
+    subgraph App ["Application Layer"]
+        API["DMS API Server"]
+        Services["Application Services"]
     end
     
-    %% Security to Configuration
     ENV --> Docker
     CORS --> Network
     Valid --> Services
     Auth -.-> API
     
-    %% Configuration to Application
     Docker --> API
     Network --> Services
     Volume --> Services
     
-    %% Styling
     classDef securityClass fill:#ffebee,stroke:#c62828,stroke-width:2px
     classDef configClass fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef appClass fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
