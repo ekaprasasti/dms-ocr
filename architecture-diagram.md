@@ -217,7 +217,7 @@ mindmap
 ## Security & Configuration
 
 ```mermaid
-graph LR
+graph TB
     subgraph "Security Layers"
         ENV[Environment Variables<br/>.env Configuration]
         CORS[CORS Policy<br/>Cross-Origin Control]
@@ -231,10 +231,30 @@ graph LR
         Volume[Data Persistence<br/>Volume Mounting]
     end
     
+    subgraph "Application Layer"
+        API[DMS API Server]
+        Services[Application Services]
+    end
+    
+    %% Security to Configuration
     ENV --> Docker
     CORS --> Network
-    Valid --> Volume
-    Auth -.-> Network
+    Valid --> Services
+    Auth -.-> API
+    
+    %% Configuration to Application
+    Docker --> API
+    Network --> Services
+    Volume --> Services
+    
+    %% Styling
+    classDef securityClass fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef configClass fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef appClass fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    
+    class ENV,CORS,Valid,Auth securityClass
+    class Docker,Network,Volume configClass
+    class API,Services appClass
 ```
 
 ## Deployment Architecture
